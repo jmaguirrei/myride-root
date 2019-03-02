@@ -3,6 +3,8 @@ const gulp = require('gulp');
 const rollup = require('gulp-better-rollup');
 const minify = require('gulp-minify');
 const rename = require('gulp-rename');
+// const run = require('gulp-run-command').default;
+const shell = require('gulp-shell');
 const del = require('del');
 const babel = require('rollup-plugin-babel');
 const resolve = require('rollup-plugin-node-resolve');
@@ -81,3 +83,4 @@ exports.bundle = gulp.series(Object.keys(Domains).map(key =>
   gulp.series(Tasks.bDev[key], Tasks.bPro[key])
 ));
 
+exports.run = shell.task('bash update.sh');

@@ -1447,15 +1447,17 @@ function startApp(Store) {
       currentPage,
       query,
       baseUrl,
-      baseFolder,
+      // baseFolder,
       moduleName,
       ports,
       isProduction,
       useServiceWorker
     } = appData;
     Store.router.appData = appData;
-    Store.router.siteUrl = isProduction ? `https://${baseUrl}/${baseFolder}` : `https://${baseUrl}:${ports[moduleName].http}`;
-    Store.router.socketUrl = !ports[moduleName].socket ? null : isProduction ? `wss://${baseUrl}/${baseFolder}` : `ws://${baseUrl}:${ports[moduleName].socket}`;
+    Store.router.siteUrl = isProduction ? `https://${baseUrl}` // ? `https://${baseUrl}/${baseFolder}`
+    : `https://${baseUrl}:${ports[moduleName].http}`;
+    Store.router.socketUrl = !ports[moduleName].socket ? null : isProduction ? `wss://${baseUrl}` // ? `wss://${baseUrl}/${baseFolder}`
+    : `ws://${baseUrl}:${ports[moduleName].socket}`;
     /* ------------------------------------------------------------------------------------------------  Register Service Worker------------------------------------------------------------------------------------------------ */
 
     if (useServiceWorker && 'serviceWorker' in window.navigator) {
