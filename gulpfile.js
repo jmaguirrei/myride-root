@@ -79,8 +79,8 @@ exports.watch = gulp.parallel(Object.keys(Domains).map(key => {
   return () => gulp.watch(watchSrc, { ignoreInitial: false }, Tasks.bDev[key]);
 }));
 
-exports.bundle = gulp.series(Object.keys(Domains).map(key =>
-  gulp.series(Tasks.bDev[key], Tasks.bPro[key])
-));
+exports.bundle = gulp.series([
+  Object.keys(Domains).map(key => gulp.series(Tasks.bDev[key], Tasks.bPro[key])),
+  shell.task('bash update.sh'),
+]);
 
-exports.run = shell.task('bash update.sh');
