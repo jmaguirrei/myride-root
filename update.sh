@@ -1,5 +1,4 @@
 #! /bin/bash
-clear
 cd /Users/jmaguirrei/MEGA/MEGAsync/Development/libs/client
 npm run git
 echo -e "\033[1;32m--------------------------------------------------------------> client: done. \033[0m"
