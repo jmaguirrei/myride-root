@@ -1,0 +1,29 @@
+{
+  "name": "myride-root",
+  "version": "0.0.1",
+  "author": "José Manuel Aguirre",
+  "license": "MIT",
+  "scripts": {
+    "git-i1": "git add .",
+    "git-i2": "git diff-index --quiet HEAD || git commit -m 'Initial commit'",
+    "git-i3": "git push",
+    "git": "npm run git-i1 && npm run git-i2 && npm run git-i3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "babel-plugin-module-resolver": "^3.2.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-2": "^6.24.1",
+    "del": "^3.0.0",
+    "gulp": "^4.0.0",
+    "gulp-better-rollup": "^3.4.0",
+    "gulp-minify": "^3.1.0",
+    "gulp-rename": "^1.4.0",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-commonjs": "^9.2.1",
+    "rollup-plugin-json": "^3.1.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-resolve": "^4.0.1"
+  }
+}
