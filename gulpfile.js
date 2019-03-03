@@ -25,7 +25,6 @@ const babelPlugins = isProduction => {
 };
 
 const plugins = isProduction => {
-    console.log("babelPlugins(isProduction)", babelPlugins(isProduction));
   return [
     babel({ plugins: babelPlugins(isProduction) }),
     builtins(),
