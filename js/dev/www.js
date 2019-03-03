@@ -529,16 +529,16 @@ var MenuIcon = ((client, id) => {
     }) {
       return client.h("div", {
         style: styles.wrapper(props),
-        "class": classes.wrapper,
+        "class": classes('wrapper'),
         onclick: props.onClick
       }, client.h("div", {
-        "class": classes.line,
+        "class": classes('line'),
         style: styles.top(props)
       }), client.h("div", {
-        "class": classes.line,
+        "class": classes('line'),
         style: styles.middle(props)
       }), client.h("div", {
-        "class": classes.line,
+        "class": classes('line'),
         style: styles.bottom(props)
       }));
     }
@@ -614,7 +614,7 @@ var Header = ((client, id) => {
     }) {
       return client.h("div", {
         id: 'header',
-        "class": classes.header
+        "class": classes('header')
       }, client.h("img", {
         src: props.logoSrc,
         style: styles.logo(props.isMenuOpen)
@@ -628,6 +628,16 @@ var Menu = ((client, id) => {
   return client.hoc({
     id,
     classes: {
+      menu: `
+        position: absolute;
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        width: 100%;
+        height: 100vh;
+        z-index: 10;
+        transition: opacity .4s ease;
+      `,
       logo: `
         max-width: 60%;
         margin: 12%;
@@ -654,17 +664,9 @@ var Menu = ((client, id) => {
     },
     styles: {
       menu: isMenuOpen => `
-        position: absolute;
-        display: flex;
-        flex-flow: column;
-        align-items: center;
-        width: 100%;
-        height: 100vh;
-        z-index: 10;
         background: ${client.lib.Colors.GREY_DARK};
         opacity: ${isMenuOpen ? 0.99 : 0};
         pointer-events: ${isMenuOpen ? 'auto' : 'none'};
-        transition: opacity .4s ease;
       `
     },
 
@@ -675,10 +677,11 @@ var Menu = ((client, id) => {
     }) {
       return client.h("div", {
         id: 'menu',
-        style: styles.menu(props.isMenuOpen)
+        style: styles.menu(props.isMenuOpen),
+        "class": classes('menu')
       }, client.h("img", {
         src: props.logoSrc,
-        "class": classes.logo
+        "class": classes('logo')
       }), props.options.map(item => {
         const {
           className,
@@ -686,7 +689,7 @@ var Menu = ((client, id) => {
           onclick
         } = item;
         return client.h("div", {
-          "class": classes[className],
+          "class": classes(className),
           onclick: onclick
         }, name);
       }));
@@ -698,26 +701,14 @@ var Menu = ((client, id) => {
 var Footer$1 = ((client, id) => {
   return client.hoc({
     id,
-    classes: {
-      wrapper: `
-        padding: 50px 20px 80px;
-        background: ${client.lib.Colors.GREY_DARKEST};
-      `,
-      logo: `
-        width: 60%;
-      `,
-      text: `
-        padding: 10px 0;
-        color: white;
-      `
-    },
+    classes: false,
 
     render({
       classes
     }) {
       return client.h("div", {
         id: 'footer',
-        "class": classes.wrapper
+        "class": classes('wrapper')
       }, client.lib.Footer.map(item => {
         const {
           type,
@@ -725,13 +716,12 @@ var Footer$1 = ((client, id) => {
           text,
           className
         } = item;
-        const classStyles = classes[className];
         if (type === 'image') return client.h("img", {
           src: url,
-          "class": classStyles
+          "class": classes(className)
         });
         return client.h("div", {
-          "class": classStyles
+          "class": classes(className)
         }, text);
       }));
     }
@@ -745,16 +735,7 @@ var Pages = ((client, id) => {
   } = client.ui.fragments;
   return client.hoc({
     id,
-    classes: {
-      scrollable: `
-        position: relative;
-        width: 100%;
-        height: 100vh;
-        overflow-x: hidden;
-        overflow-y: scroll;
-        -webkit-overflow-scrolling: touch;
-      `
-    },
+    classes: false,
     styles: {
       page: isSelected => `
         position: absolute;
@@ -777,8 +758,9 @@ var Pages = ((client, id) => {
       return Object.keys(pages).map(page => {
         const Page = pages[page];
         return client.h("div", {
-          "class": classes.scrollable,
-          style: styles.page(page === currentPage)
+          "class": classes('scrollable'),
+          style: styles.page(page === currentPage),
+          "data-route": page
         }, client.h(Page, null), client.h(Footer, null));
       });
     }
@@ -798,43 +780,14 @@ var fragments = /*#__PURE__*/Object.freeze({
 var Home$1 = ((client, id) => {
   return client.hoc({
     id,
-    classes: {
-      wrapper: `
-        display: flex;
-        flex-flow: column;
-        align-items: center;
-        text-align: center;
-        padding-bottom: 25vh;
-      `,
-      headline: `
-        font-size: 24px;
-        padding: 20px;
-      `,
-      title: `
-        font-size: 20px;
-        font-weight: bold;
-        padding: 20px;
-      `,
-      paragraph: `
-        padding: 20px 20px 60px;
-        font-size: 18px;
-        color: hsl(0, 0%, 45%);
-      `,
-      'hero-image': `
-        max-height: 50vh;
-      `,
-      image: `
-        margin-top: 30px;
-        max-width: 30%;
-      `
-    },
+    classes: false,
 
     render({
       classes
     }) {
       return client.h("div", {
         id: 'home-wrapper',
-        "class": classes.wrapper
+        "class": classes('wrapper')
       }, client.lib.Home.map(item => {
         const {
           type,
@@ -842,13 +795,12 @@ var Home$1 = ((client, id) => {
           text,
           className
         } = item;
-        const classStyles = classes[className];
         if (type === 'image') return client.h("img", {
           src: url,
-          "class": classStyles
+          "class": classes(className)
         });
         return client.h("div", {
-          "class": classStyles
+          "class": classes(className)
         }, text);
       }));
     }
@@ -859,47 +811,14 @@ var Home$1 = ((client, id) => {
 var Agreements$1 = ((client, id) => {
   return client.hoc({
     id,
-    classes: {
-      wrapper: `
-        display: flex;
-        flex-flow: column;
-        align-items: center;
-        text-align: center;
-        padding-bottom: 25vh;
-      `,
-      headline: `
-        font-size: 24px;
-        padding: 20px;
-      `,
-      'big-title': `
-        font-size: 32px;
-        padding: 20px;
-      `,
-      title: `
-        font-size: 20px;
-        font-weight: bold;
-        padding: 20px;
-      `,
-      paragraph: `
-        padding: 20px 20px 60px;
-        font-size: 18px;
-        color: hsl(0, 0%, 45%);
-      `,
-      'hero-image': `
-        max-height: 50vh;
-      `,
-      image: `
-        margin-top: 30px;
-        max-width: 30%;
-      `
-    },
+    classes: false,
 
     render({
       classes
     }) {
       return client.h("div", {
         id: 'agreements-wrapper',
-        "class": classes.wrapper
+        "class": classes('wrapper')
       }, client.lib.Agreements.map(item => {
         const {
           type,
@@ -907,24 +826,14 @@ var Agreements$1 = ((client, id) => {
           text,
           className
         } = item;
-        const classStyles = classes[className];
         if (type === 'image') return client.h("img", {
           src: url,
-          "class": classStyles
+          "class": classes(className)
         });
         return client.h("div", {
-          "class": classStyles
+          "class": classes(className)
         }, text);
-      })); // return (
-      //   div({ id: 'agreements-wrapper', class: classes.wrapper },
-      //     client.lib.Agreements.map(item => {
-      //       const { type, url, text, className } = item;
-      //       const classStyles = classes[className];
-      //       if (type === 'image') return img({ src: url, class: classStyles });
-      //       return div({ class: classStyles }, text);
-      //     })
-      //   )
-      // );
+      }));
     }
 
   });
@@ -933,33 +842,14 @@ var Agreements$1 = ((client, id) => {
 var Faq$1 = ((client, id) => {
   return client.hoc({
     id,
-    classes: {
-      wrapper: `
-        display: flex;
-        flex-flow: column;
-        align-items: center;
-        text-align: center;
-        padding-bottom: 25vh;
-      `,
-      question: `
-        font-size: 24px;
-        font-weight: bold;
-        padding: 40px 20px;
-        margin-top: 50px;
-        color: ${client.lib.Colors.BLUE_HEADLINE};
-      `,
-      answer: `
-        font-size: 20px;
-        padding: 20px;
-      `
-    },
+    classes: false,
 
     render({
       classes
     }) {
       return client.h("div", {
         id: 'faq-wrapper',
-        "class": classes.wrapper
+        "class": classes('wrapper')
       }, client.lib.Faq.map((item, i) => {
         const {
           text,
@@ -967,7 +857,7 @@ var Faq$1 = ((client, id) => {
         } = item;
         return client.h("div", {
           id: `faq-${i}`,
-          "class": classes[className]
+          "class": classes(className)
         }, text);
       }));
     }
@@ -1899,12 +1789,7 @@ var Help$1 = ((client, id) => {
   } = client.ui.components;
   return client.hoc({
     id,
-    classes: {
-      name: `
-        padding: 20px;
-        text-align: center;
-      `
-    },
+    classes: false,
 
     state() {
       const div = document.getElementById('help-wrapper');
@@ -1939,7 +1824,7 @@ var Help$1 = ((client, id) => {
         id: 'help-wrapper'
       }, client.lib.Help.YoutubeVideos.map(video => {
         return client.h("div", null, client.h("div", {
-          "class": classes.name
+          "class": classes('name')
         }, video.name), client.h(YTPlayer, {
           Player: ytPlayer,
           videoId: video.src,
@@ -2000,15 +1885,7 @@ var rootComponent = ((client, id) => {
       };
     },
 
-    classes: {
-      root: `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-      `
-    },
+    classes: false,
 
     render({
       actions,
@@ -2025,21 +1902,21 @@ var rootComponent = ((client, id) => {
       } = state;
       return client.h("div", {
         id: 'root',
-        "class": classes.root
+        "class": classes('root')
       }, client.h(MenuIcon, {
         isOpen: isMenuOpen,
         onClick: onClickMenu,
         color: 'white',
         inStyle: 'left: 12px; top: 12px;'
       }), client.h(Header, {
-        isMenuOpen,
+        isMenuOpen: isMenuOpen,
         logoSrc: client.lib.Paths.LOGO_LIGHT
       }), client.h(Menu, {
-        isMenuOpen,
+        isMenuOpen: isMenuOpen,
         logoSrc: client.lib.Paths.LOGO_LIGHT,
         options: menuOptions
       }), client.h(Pages, {
-        currentPage,
+        currentPage: currentPage,
         pages: {
           home: Home,
           agreements: Agreements,

@@ -744,16 +744,16 @@ var MenuIcon = ((client, id) => {
     }) {
       return client.h("div", {
         style: styles.wrapper(props),
-        "class": classes.wrapper,
+        "class": classes('wrapper'),
         onclick: props.onClick
       }, client.h("div", {
-        "class": classes.line,
+        "class": classes('line'),
         style: styles.top(props)
       }), client.h("div", {
-        "class": classes.line,
+        "class": classes('line'),
         style: styles.middle(props)
       }), client.h("div", {
-        "class": classes.line,
+        "class": classes('line'),
         style: styles.bottom(props)
       }));
     }
@@ -846,12 +846,12 @@ var Separator = ((client, id) => {
         inStyle = ''
       } = props;
       return client.h("div", {
-        "class": classes.separator,
+        "class": classes('separator'),
         style: inStyle
       }, client.h("div", {
-        "class": classes.line
+        "class": classes('line')
       }), client.h("span", {
-        "class": classes.text
+        "class": classes('text')
       }, text));
     }
 
@@ -861,17 +861,7 @@ var Separator = ((client, id) => {
 var Input = ((client, id) => {
   return client.hoc({
     id,
-    classes: {
-      input: `
-        font-size: 16px;
-        border: 1px solid hsl(0, 0%, 94%);
-        outline: none;
-        padding: 15px 18px;
-        background: hsl(0, 0%, 97%);
-        border-radius: 5px;
-        width: 100%;
-      `
-    },
+    classes: false,
 
     mounted(props) {
       if (props.autoFocus) {
@@ -1016,24 +1006,7 @@ var FacebookButton = ((client, id) => {
       client.createScript('facebook-jssdk', 'https://connect.facebook.net/en_US/sdk.js');
     },
 
-    classes: {
-      wrapper: `
-        position: relative;
-        background-color: ${client.lib.Colors.BLUE_FACEBOOK};
-        border-radius: 7px;
-        color: white;
-        display: flex;
-        align-items: center;
-        width: 100%;
-        cursor: pointer;
-      `,
-      text: `
-        padding: 10px;
-        font-size: 18px;
-        text-align: center;
-        width: 100%;
-      `
-    },
+    classes: false,
 
     render({
       props,
@@ -1100,7 +1073,7 @@ var Header = ((client, id) => {
     }) {
       return client.h("div", {
         id: 'header',
-        "class": classes.header
+        "class": classes('header')
       }, client.h("img", {
         src: props.logoSrc,
         style: styles.logo(props.isMenuOpen)
@@ -1114,6 +1087,16 @@ var Menu = ((client, id) => {
   return client.hoc({
     id,
     classes: {
+      menu: `
+        position: absolute;
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        width: 100%;
+        height: 100vh;
+        z-index: 10;
+        transition: opacity .4s ease;
+      `,
       logo: `
         max-width: 60%;
         margin: 12%;
@@ -1140,17 +1123,9 @@ var Menu = ((client, id) => {
     },
     styles: {
       menu: isMenuOpen => `
-        position: absolute;
-        display: flex;
-        flex-flow: column;
-        align-items: center;
-        width: 100%;
-        height: 100vh;
-        z-index: 10;
         background: ${client.lib.Colors.GREY_DARK};
         opacity: ${isMenuOpen ? 0.99 : 0};
         pointer-events: ${isMenuOpen ? 'auto' : 'none'};
-        transition: opacity .4s ease;
       `
     },
 
@@ -1161,10 +1136,11 @@ var Menu = ((client, id) => {
     }) {
       return client.h("div", {
         id: 'menu',
-        style: styles.menu(props.isMenuOpen)
+        style: styles.menu(props.isMenuOpen),
+        "class": classes('menu')
       }, client.h("img", {
         src: props.logoSrc,
-        "class": classes.logo
+        "class": classes('logo')
       }), props.options.map(item => {
         const {
           className,
@@ -1172,7 +1148,7 @@ var Menu = ((client, id) => {
           onclick
         } = item;
         return client.h("div", {
-          "class": classes[className],
+          "class": classes(className),
           onclick: onclick
         }, name);
       }));
@@ -1192,22 +1168,7 @@ var Alerts = ((client, id) => {
       };
     },
 
-    classes: {
-      alert: `
-        background: ${client.lib.Colors.RED_WARNING};
-        box-shadow: inset 0px 0px 6px hsla(0,0%,0%,0.5);
-        color: white;
-        font-size: 16px;
-        left: 0;
-        padding: 10px;
-        position: absolute;
-        text-align: center;
-        top: 1px;
-        transition: all .3s ease;
-        width: 100%;
-        z-index: 10;
-      `
-    },
+    classes: false,
     styles: {
       alert: isVisible => `
         opacity: ${isVisible ? 1 : 0};
@@ -1274,16 +1235,7 @@ var ForgotPassword = ((client, id) => {
       };
     },
 
-    classes: {
-      forgot: `
-        padding: 5px 15px;
-        font-size: 13px;
-        user-select: none;
-        flex: 1;
-        opacity: 1;
-        cursor: pointer;
-      `
-    },
+    classes: false,
 
     render({
       actions,
@@ -1391,11 +1343,7 @@ var Email = ((client, id) => {
       };
     },
 
-    classes: {
-      wrapper: `
-        padding: 5px 10px;
-      `
-    },
+    classes: false,
 
     render({
       state,
@@ -1452,14 +1400,7 @@ var Password = ((client, id) => {
       };
     },
 
-    classes: {
-      wrapper: `
-        padding: 5px 10px;
-        position: relative;
-        display: flex;
-        align-items: center;
-      `
-    },
+    classes: false,
 
     render({
       state,
@@ -1519,22 +1460,7 @@ var Buttons = ((client, id) => {
         width: ${currentStep >= 1 ? 70 : 98}%;
       `
     },
-    classes: {
-      wrapper: `
-        padding: 20px 10px;
-        display: flex;
-        justify-content: center;
-      `,
-      button: `
-        border-radius: 7px;
-        color: white;
-        text-align: center;
-        font-size: 18px;
-        padding: 10px;
-        background: ${client.lib.Colors.GREEN_SIGNUP};
-        cursor: pointer;
-      `
-    },
+    classes: false,
 
     render({
       classes,
@@ -1578,20 +1504,7 @@ var Headline = ((client, id) => {
   } = client.ui.components;
   return client.hoc({
     id,
-    classes: {
-      container: `
-        display: flex;
-        align-items: center;
-      `,
-      title: `
-        width: 100%;
-        padding: 12px;
-        font-size: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      `
-    },
+    classes: false,
 
     render({
       classes,
@@ -1774,16 +1687,7 @@ var Forgot = ((client, id) => {
       };
     },
 
-    classes: {
-      container: `
-        display: block;
-        position: relative;
-      `,
-      step: `
-        padding: 0 5px;
-        width: 100%;
-      `
-    },
+    classes: false,
     styles: {
       carrousel: currentStep => `
         width: 300%;
@@ -1843,11 +1747,7 @@ var Email$1 = ((client, id) => {
       };
     },
 
-    classes: {
-      wrapper: `
-        padding: 5px 10px;
-      `
-    },
+    classes: false,
 
     render({
       state,
@@ -1905,16 +1805,7 @@ var Password$1 = ((client, id) => {
       };
     },
 
-    classes: {
-      wrapper: `
-        padding: 5px 10px;
-      `,
-      inputWrapper: `
-        position: relative;
-        display: flex;
-        align-items: center;
-      `
-    },
+    classes: false,
 
     render({
       state,
@@ -1986,36 +1877,7 @@ var Buttons$1 = ((client, id) => {
         opacity: ${pressed ? 0.5 : 1};
       `
     },
-    classes: {
-      wrapper: `
-        padding: 10px;
-      `,
-      bottomWrapper: `
-        display: flex;
-      `,
-      login: `
-        color: white;
-        text-align: center;
-        font-size: 18px;
-        border-radius: 7px;
-        padding: 10px;
-        width: 100%;
-        background: ${client.lib.Colors.BLUE_SIGNIN};
-        cursor: pointer;
-        transition: opacity .3s ease;
-      `,
-      create: `
-        margin-right: 10px;
-        border-radius: 7px;
-        color: white;
-        text-align: center;
-        font-size: 18px;
-        padding: 10px;
-        width: calc(100% - 20px);
-        background: ${client.lib.Colors.GREEN_SIGNUP};
-        cursor: pointer;
-      `
-    },
+    classes: false,
 
     render({
       classes,
@@ -2064,20 +1926,7 @@ var Headline$1 = ((client, id) => {
   } = client.ui.components;
   return client.hoc({
     id,
-    classes: {
-      container: `
-        display: flex;
-        align-items: center;
-      `,
-      title: `
-        width: 100%;
-        padding: 12px;
-        font-size: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      `
-    },
+    classes: false,
 
     render({
       classes,
@@ -2120,13 +1969,7 @@ var SignIn = ((client, id) => {
   } = client.ui.pages;
   return client.hoc({
     id,
-    classes: {
-      container: `
-        display: block;
-        padding: 0 5px;
-        position: relative;
-      `
-    },
+    classes: false,
 
     render({
       classes
@@ -2169,32 +2012,7 @@ var Buttons$2 = ((client, id) => {
         width: ${currentStep >= 1 ? 70 : 98}%;
       `
     },
-    classes: {
-      wrapper: `
-        padding: 20px 10px;
-        display: flex;
-        flex-flow: column;
-        justify-content: center;
-      `,
-      button: `
-        border-radius: 7px;
-        color: white;
-        text-align: center;
-        font-size: 18px;
-        padding: 10px;
-        background: ${client.lib.Colors.GREEN_SIGNUP};
-        cursor: pointer;
-      `,
-      alreadyRegistered: `
-        padding: 10px 20px;
-        font-size: 13px;
-        user-select: none;
-        flex: 1;
-        opacity: 1;
-        text-align: right;
-        cursor: pointer;
-      `
-    },
+    classes: false,
 
     render({
       classes,
@@ -2263,11 +2081,7 @@ var Email$2 = ((client, id) => {
       };
     },
 
-    classes: {
-      wrapper: `
-        padding: 5px 10px;
-      `
-    },
+    classes: false,
 
     render({
       state,
@@ -2301,20 +2115,7 @@ var Headline$2 = ((client, id) => {
   } = client.ui.components;
   return client.hoc({
     id,
-    classes: {
-      container: `
-        display: flex;
-        align-items: center;
-      `,
-      title: `
-        width: 100%;
-        padding: 12px;
-        font-size: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      `
-    },
+    classes: false,
 
     render({
       classes,
@@ -2369,11 +2170,7 @@ var Name = ((client, id) => {
       };
     },
 
-    classes: {
-      wrapper: `
-        padding: 5px 10px;
-      `
-    },
+    classes: false,
 
     render({
       state,
@@ -2429,14 +2226,7 @@ var Password$2 = ((client, id) => {
       };
     },
 
-    classes: {
-      wrapper: `
-        padding: 5px 10px;
-        position: relative;
-        display: flex;
-        align-items: center;
-      `
-    },
+    classes: false,
 
     render({
       state,
@@ -2604,16 +2394,7 @@ var SignUp = ((client, id) => {
       };
     },
 
-    classes: {
-      container: `
-        display: block;
-        position: relative;
-      `,
-      step: `
-        padding: 0 5px;
-        width: 100%;
-      `
-    },
+    classes: false,
     styles: {
       carrousel: currentStep => `
         width: 300%;
@@ -2710,15 +2491,7 @@ var rootComponent = ((client, id) => {
       };
     },
 
-    classes: {
-      root: `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-      `
-    },
+    classes: false,
 
     render({
       actions,

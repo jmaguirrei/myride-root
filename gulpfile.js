@@ -3,29 +3,36 @@ const gulp = require('gulp');
 const rollup = require('gulp-better-rollup');
 const minify = require('gulp-minify');
 const rename = require('gulp-rename');
-// const run = require('gulp-run-command').default;
 const shell = require('gulp-shell');
 const del = require('del');
 const babel = require('rollup-plugin-babel');
 const resolve = require('rollup-plugin-node-resolve');
 const commonjs = require('rollup-plugin-commonjs');
 const builtins = require('rollup-plugin-node-builtins');
-// const json = require('rollup-plugin-json');
 
 /* --------------------------------------------------------------------------------------------- */
 
-const plugins = [
-  babel({
-    plugins: [
-      [ 'module-resolver', { root: [ './' ], alias: { '@root': './', '@libs': '../../../libs' }} ],
-      [ 'transform-react-jsx', { pragma: 'client.h' } ],
-    ],
-  }),
-  // json(),
-  builtins(),
-  resolve(),
-  commonjs(),
-];
+const babelPlugins = isProduction => {
+  const base = [
+    [ 'module-resolver', { root: [ './' ], alias: { '@root': './', '@libs': '../../../libs' }} ],
+    [ 'transform-react-jsx', { pragma: 'client.h' } ],
+  ];
+  if (!isProduction) return base;
+  return [
+    ...base,
+    [ '../../../libs/babel/src/remove-classes-in-bundle.js' ]
+  ];
+};
+
+const plugins = isProduction => {
+    console.log("babelPlugins(isProduction)", babelPlugins(isProduction));
+  return [
+    babel({ plugins: babelPlugins(isProduction) }),
+    builtins(),
+    resolve(),
+    commonjs(),
+  ];
+};
 
 const Domains = {
   // Base folder - watchSrc - indexFile
@@ -40,10 +47,10 @@ const Domains = {
 
 const Factory = {};
 
-Factory.bDev = (fileName, indexFile) => gulp.series(
+Factory.bDev = (fileName, indexFile, isProduction) => gulp.series(
   () => del(`js/dev/${fileName}.js`),
   () => gulp.src(indexFile, { base: './dev' })
-  .pipe(rollup({ plugins }, 'es'))
+  .pipe(rollup({ plugins: plugins(isProduction) }, 'es'))
   .pipe(rename(`${fileName}.js`))
   .pipe(gulp.dest('js/dev'))
 );
@@ -62,9 +69,9 @@ Factory.bPro = fileName => gulp.series(
 
 const Tasks = {};
 
-Tasks.bDev = Object.keys(Domains).reduce((acum, key) => ({
+Tasks.bDev = isProduction => Object.keys(Domains).reduce((acum, key) => ({
   ...acum,
-  [key]: Factory.bDev(key, `${Domains[key][0]}/${Domains[key][2]}`),
+  [key]: Factory.bDev(key, `${Domains[key][0]}/${Domains[key][2]}`, isProduction),
 }), {});
 
 Tasks.bPro = Object.keys(Domains).reduce((acum, key) => ({
@@ -76,11 +83,11 @@ Tasks.bPro = Object.keys(Domains).reduce((acum, key) => ({
 
 exports.watch = gulp.parallel(Object.keys(Domains).map(key => {
   const watchSrc = `${Domains[key][0]}/${Domains[key][1]}`;
-  return () => gulp.watch(watchSrc, { ignoreInitial: false }, Tasks.bDev[key]);
+  return () => gulp.watch(watchSrc, { ignoreInitial: false }, Tasks.bDev(false)[key]);
 }));
 
 exports.bundle = gulp.series([
-  Object.keys(Domains).map(key => gulp.series(Tasks.bDev[key], Tasks.bPro[key])),
+  Object.keys(Domains).map(key => gulp.series(Tasks.bDev(true)[key], Tasks.bPro[key])),
   shell.task('bash update.sh'),
 ]);
 

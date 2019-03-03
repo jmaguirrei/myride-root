@@ -1,4 +1,5 @@
 #! /bin/bash
+echo -e "\033[1;32m--------------------------------------------------------------> GIT STARTED. \033[0m"
 cd /Users/jmaguirrei/MEGA/MEGAsync/Development/libs/client
 npm run git
 echo -e "\033[1;32m--------------------------------------------------------------> client: done. \033[0m"

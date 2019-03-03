@@ -162,16 +162,16 @@ var MenuIcon = ((client, id) => {
     }) {
       return client.h("div", {
         style: styles.wrapper(props),
-        "class": classes.wrapper,
+        "class": classes('wrapper'),
         onclick: props.onClick
       }, client.h("div", {
-        "class": classes.line,
+        "class": classes('line'),
         style: styles.top(props)
       }), client.h("div", {
-        "class": classes.line,
+        "class": classes('line'),
         style: styles.middle(props)
       }), client.h("div", {
-        "class": classes.line,
+        "class": classes('line'),
         style: styles.bottom(props)
       }));
     }
@@ -214,11 +214,7 @@ var GoogleMaps = ((client, id) => {
       client.createScript('googlemaps-script', url);
     },
 
-    classes: {
-      map: `
-        height: 100vh;
-      `
-    },
+    classes: false,
 
     render({
       props,
@@ -270,7 +266,7 @@ var Header = ((client, id) => {
     }) {
       return client.h("div", {
         id: 'header',
-        "class": classes.header
+        "class": classes('header')
       }, client.h("img", {
         src: props.logoSrc,
         style: styles.logo(props.isMenuOpen)
@@ -284,6 +280,16 @@ var Menu = ((client, id) => {
   return client.hoc({
     id,
     classes: {
+      menu: `
+        position: absolute;
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        width: 100%;
+        height: 100vh;
+        z-index: 10;
+        transition: opacity .4s ease;
+      `,
       logo: `
         max-width: 60%;
         margin: 12%;
@@ -310,17 +316,9 @@ var Menu = ((client, id) => {
     },
     styles: {
       menu: isMenuOpen => `
-        position: absolute;
-        display: flex;
-        flex-flow: column;
-        align-items: center;
-        width: 100%;
-        height: 100vh;
-        z-index: 10;
         background: ${client.lib.Colors.GREY_DARK};
         opacity: ${isMenuOpen ? 0.99 : 0};
         pointer-events: ${isMenuOpen ? 'auto' : 'none'};
-        transition: opacity .4s ease;
       `
     },
 
@@ -331,10 +329,11 @@ var Menu = ((client, id) => {
     }) {
       return client.h("div", {
         id: 'menu',
-        style: styles.menu(props.isMenuOpen)
+        style: styles.menu(props.isMenuOpen),
+        "class": classes('menu')
       }, client.h("img", {
         src: props.logoSrc,
-        "class": classes.logo
+        "class": classes('logo')
       }), props.options.map(item => {
         const {
           className,
@@ -342,7 +341,7 @@ var Menu = ((client, id) => {
           onclick
         } = item;
         return client.h("div", {
-          "class": classes[className],
+          "class": classes(className),
           onclick: onclick
         }, name);
       }));
@@ -472,15 +471,7 @@ var rootComponent = ((client, id) => {
       };
     },
 
-    classes: {
-      root: `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-      `
-    },
+    classes: false,
 
     render({
       actions,

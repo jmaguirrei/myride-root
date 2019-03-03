@@ -1066,6 +1066,7 @@ function update(Store) {
     const currentRootNode = document.getElementById(rootNodeId);
     morphdom_1(currentRootNode, newRootNode, {
       onBeforeElUpdated(fromEl, toEl) {
+        if (fromEl.id) console.log(fromEl.id);
         EventsKeys.forEach(key => {
           // Always update event handlers after each render
           if (fromEl[key]) fromEl[key] = toEl[key];
@@ -1647,10 +1648,10 @@ function createStore(definition) {
   return Store;
 }
 
-function registerStyles(registerNumber, styledRules, isBrowser) {
+function registerStyles(registerNumber, styledRules, isBrowser, isProduction) {
   if (!styledRules) return;
 
-  if (isBrowser) {
+  if (isBrowser && !isProduction) {
     const headStyles = document.getElementById('component-styles');
     headStyles.innerText += styledRules;
   } else {
@@ -3797,20 +3798,17 @@ function processStyle(key, rules) {
   return out.substr(1, out.length - 2);
 }
 
-function getClasses(componentDefId, componentDefClasses = {}) {
+function getClassNewName(className, componentDefId) {
+  return `${className}--${componentDefId}`;
+}
+
+function getClassesRules(componentDefId, componentDefClasses) {
+  if (!componentDefClasses) return null;
   const classKeys = Object.keys(componentDefClasses);
-  return {
-    rules: classKeys.reduce((acum, key) => {
-      const newClassName = `${key}--${componentDefId}`;
-      return `${acum}${processStyle(newClassName, componentDefClasses[key])}`;
-    }, ''),
-    mapping: classKeys.reduce((acum, key) => {
-      const newClassName = `${key}--${componentDefId}`;
-      return { ...acum,
-        [key]: newClassName
-      };
-    }, {})
-  };
+  return classKeys.reduce((acum, key) => {
+    const newClassName = getClassNewName(key, componentDefId);
+    return `${acum}${processStyle(newClassName, componentDefClasses[key])}`;
+  }, '');
 }
 
 function getStyles(componentStyles = {}) {
@@ -3825,29 +3823,25 @@ function getStyles(componentStyles = {}) {
   }, {});
 }
 
-var styles = {
-  registerStyles,
-  getClasses,
-  getStyles
-};
-
 function getFinalProps(args) {
   const props = args.props || {};
   const {
     store,
     componentDef,
-    processedClasses,
     processedStyles,
     utils
   } = args;
   const state = componentDef.state ? componentDef.state(props, store) : {};
   const actions = componentDef.actions ? componentDef.actions(props, store) : {};
+
+  const classes = className => getClassNewName(className, componentDef.id);
+
   return {
     props,
     state,
     actions,
     styles: processedStyles,
-    classes: processedClasses.mapping,
+    classes,
     utils
   };
 }
@@ -3874,9 +3868,13 @@ function getStore(Store, componentDefId) {
 }
 
 // import morphdom from 'morphdom';
-var createHoc = ((Store, isBrowser) => {
-  // In browser clean component-styles on each refresh
-  if (isBrowser) {
+var createHoc = ((Store, appData, isBrowser) => {
+  const {
+    isProduction
+  } = appData; // In browser clean component-styles on each refresh
+
+  if (isBrowser && !isProduction) {
+    console.log("isProduction", isProduction);
     const headStyles = document.getElementById('component-styles');
     headStyles.innerText = '';
   }
@@ -3885,11 +3883,11 @@ var createHoc = ((Store, isBrowser) => {
     if (!componentDef.id) componentDef.id = 1000; // Default value, used for rootComponent
 
     Store.render.registerComponent(componentDef);
-    const processedClasses = styles.getClasses(componentDef.id, componentDef.classes);
-    styles.registerStyles(componentDef.id, processedClasses.rules, isBrowser);
+    const classesRules = getClassesRules(componentDef.id, componentDef.classes);
+    registerStyles(componentDef.id, classesRules, isBrowser, isProduction);
     const store = getStore(Store);
     const utils = store.utils;
-    const processedStyles = styles.getStyles(componentDef.styles);
+    const processedStyles = getStyles(componentDef.styles);
     return function renderComponent(props, children) {
       if (!Store.objects.flags.IS_MOUNTED && componentDef.mounted) {
         Store.methods.on('MOUNTED', () => {
@@ -3902,7 +3900,6 @@ var createHoc = ((Store, isBrowser) => {
         utils,
         store,
         componentDef,
-        processedClasses,
         processedStyles
       });
       const domNode = componentDef.render(allProps, children);
@@ -3981,10 +3978,11 @@ var createHDom = ((Store, isBrowser) => (tag, props = {}, ...children) => {
       } else if (propName === 'class') {
         el.className = value;
       } else if (propName in el) {
-        // console.log("propName", propName);
         if (value) el[propName] = value;
       } else if (utils$1.isSpecialProp(propName)) {
         utils$1.addSpecialProp(el, propName, value);
+      } else if (propName.startsWith('data-')) {
+        el.setAttribute(propName, value);
       } else {
         console.warn(`${propName} is not a valid property of a <${tag}>`);
       }
@@ -4023,7 +4021,8 @@ function createClient(args, isBrowser) {
     lib,
     components,
     fragments,
-    pages
+    pages,
+    appData
   } = args; // Initialization
 
   const client = {
@@ -4036,7 +4035,7 @@ function createClient(args, isBrowser) {
     createScript
   }; // Store is necessary to create the HOC
 
-  client.hoc = createHoc(Store, isBrowser); // Attach lib for convenience
+  client.hoc = createHoc(Store, appData, isBrowser); // Attach lib for convenience
 
   client.lib = lib; // Components && Fragments
 
@@ -4061,19 +4060,22 @@ var init = ((config, isBrowser = false) => {
     rootComponent
   });
   if (isBrowser) window.Store = Store;
+  const appData = isBrowser ? window[globals.WINDOW_APP_DATA] : null;
+  console.log("appData", appData);
 
   const _client = createClient({
     Store,
     lib,
     components,
     fragments,
-    pages
+    pages,
+    appData
   }, isBrowser);
 
   if (isBrowser) {
     window.onload = () => {
       Store.render.startApp({
-        appData: window[globals.WINDOW_APP_DATA],
+        appData,
         client: _client
       });
     };
