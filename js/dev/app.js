@@ -11,11 +11,13 @@ var store = {
     // Domain properties
     user_id: '',
     language: 'en',
-
-    /*      currentPage      -----------      Start with '' because Root component will be using props.currentPage in SSR      Values: welcome, signin, signup, forgot    */
+    // pages
     currentPage: '',
     // Menu
-    isMenuOpen: false
+    isMenuOpen: false,
+    // Map
+    'currentDevicePosition.lat': 0,
+    'currentDevicePosition.lng': 0
   }
 };
 
@@ -99,11 +101,33 @@ var lib = /*#__PURE__*/Object.freeze({
 });
 
 const size = 30;
+const lineW = 78; // %
+
+const lineH = Math.floor(size / 12);
 const transY = Math.ceil(0.25 * size);
 var MenuIcon = ((client, id) => {
   return client.hoc({
     id,
-    classes: false,
+    classes: {
+      wrapper: `
+        position: absolute;
+        display: flex;
+        flex-flow: column;
+        justify-content: center;
+        height: ${size}px;
+        width: ${size}px;
+        cursor: pointer;
+      `,
+      line: `
+        position: absolute;
+        width: ${lineW}%;
+        left: ${0.5 * (100 - lineW)}%;
+        height: ${lineH}px;
+        border-radius: ${size}px;
+        transition: all .4s cubic-bezier(0.65, 0.04, 0.29, 0.97);
+        transform-origin: center center;
+      `
+    },
     styles: {
       wrapper: ({
         inStyle
@@ -165,34 +189,108 @@ var GoogleMaps = ((client, id) => {
   return client.hoc({
     id,
 
-    actions(props, store) {
-      return {
-        onclick: () => {
-          window.navigator.geolocation.getCurrentPosition(position => {
-            const {
-              latitude,
-              longitude
-            } = position.coords;
-            console.log("latitude, longitude", latitude, longitude);
-            console.log(store.get('mapObject'));
-          });
-        }
-      };
-    },
-
     mounted(props, store) {
       window.initMap = () => {
-        const map = new window.google.maps.Map(document.getElementById('map-wrapper'), {
+        const mapWrapper = document.getElementById('map-wrapper');
+        store.values.mapObject = new window.google.maps.Map(mapWrapper, {
           center: initialLatLon,
-          zoom: 12
-        }); // store.set({ mapObject: map }, { dynamic: true });
+          zoom: 16,
+          disableDefaultUI: true,
+          clickableIcons: false,
+          styles: [{
+            featureType: 'poi.business',
+            stylers: [{
+              visibility: 'off'
+            }]
+          }, {
+            featureType: 'transit',
+            elementType: 'labels.icon',
+            stylers: [{
+              visibility: 'off'
+            }]
+          }]
+        }); // store.values.mapObject.setOptions({
+        // });
+
+        window.navigator.geolocation.getCurrentPosition(position => {
+          const {
+            latitude,
+            longitude
+          } = position.coords;
+          store.set({
+            'currentDevicePosition.lat': latitude,
+            'currentDevicePosition.lng': longitude
+          });
+          store.values.mapObject.setCenter({
+            lat: latitude,
+            lng: longitude
+          });
+        });
       };
 
       const url = `https://maps.googleapis.com/maps/api/js?key=${props.key}&callback=initMap`;
       client.createScript('googlemaps-script', url);
     },
 
-    classes: false,
+    classes: {
+      map: `
+        height: 100vh;
+      `
+    },
+
+    render({
+      classes,
+      actions
+    }) {
+      return client.h("div", {
+        id: 'map-wrapper',
+        "class": classes('map'),
+        "data-skip-morph": true
+      });
+    }
+
+  });
+});
+
+var MapMarker = ((client, id) => {
+  return client.hoc({
+    id,
+
+    actions(props, store) {
+      return {
+        onclick: () => {}
+      };
+    },
+
+    mounted(props, store) {
+      window.initMap = () => {
+        const mapWrapper = document.getElementById('map-wrapper');
+        store.values.mapObject = new window.google.maps.Map(mapWrapper, {
+          center: initialLatLon,
+          zoom: 16,
+          disableDefaultUI: true
+        });
+        window.navigator.geolocation.getCurrentPosition(position => {
+          const {
+            latitude,
+            longitude
+          } = position.coords;
+          store.values.mapObject.setCenter({
+            lat: latitude,
+            lng: longitude
+          });
+        });
+      };
+
+      const url = `https://maps.googleapis.com/maps/api/js?key=${props.key}&callback=initMap`;
+      client.createScript('googlemaps-script', url);
+    },
+
+    classes: {
+      map: `
+        height: 100vh;
+      `
+    },
 
     render({
       props,
@@ -213,13 +311,23 @@ var GoogleMaps = ((client, id) => {
 
 var components = /*#__PURE__*/Object.freeze({
   MenuIcon: MenuIcon,
-  GoogleMaps: GoogleMaps
+  GoogleMaps: GoogleMaps,
+  MapMarker: MapMarker
 });
 
 var Header = ((client, id) => {
   return client.hoc({
     id,
-    classes: false,
+    classes: {
+      header: `
+        display: flex;
+        align-items: center;
+        width: 100%;
+        justify-content: center;
+        height: ${client.lib.Sizes.HEADER_HEIGHT};
+        background: ${client.lib.Colors.GREY_DARK};
+      `
+    },
     styles: {
       logo: isMenuOpen => `
         opacity: ${isMenuOpen ? 0 : 1};
@@ -248,7 +356,41 @@ var Header = ((client, id) => {
 var Menu = ((client, id) => {
   return client.hoc({
     id,
-    classes: false,
+    classes: {
+      menu: `
+        position: absolute;
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        width: 100%;
+        height: 100vh;
+        z-index: 10;
+        transition: opacity .4s ease;
+      `,
+      logo: `
+        max-width: 60%;
+        margin: 12%;
+      `,
+      link: `
+        font-size: 20px;
+        padding: 16px;
+        cursor: pointer;
+        color: white;
+      `,
+      button: `
+        margin-top: 60px;
+        padding: 10px;
+        cursor: pointer;
+        width: 60%;
+        text-align: center;
+        color: white;
+        font-size: 20px;
+        text-shadow: 0px 1px 2px hsla(0, 0%, 0%, 0.8);
+        background: ${client.lib.Colors.BLUE_SIGNIN};
+        border-radius: 12px;
+        box-shadow: 0px 1px 1px -1px black;
+      `
+    },
     styles: {
       menu: isMenuOpen => `
         background: ${client.lib.Colors.GREY_DARK};
@@ -406,7 +548,15 @@ var rootComponent = ((client, id) => {
       };
     },
 
-    classes: false,
+    classes: {
+      root: `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      `
+    },
 
     render({
       actions,

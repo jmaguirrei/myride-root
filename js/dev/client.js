@@ -1066,7 +1066,7 @@ function update(Store) {
     const currentRootNode = document.getElementById(rootNodeId);
     morphdom_1(currentRootNode, newRootNode, {
       onBeforeElUpdated(fromEl, toEl) {
-        // if (fromEl.id) console.log(fromEl.id);
+        if (fromEl.hasAttribute('data-skip-morph')) return false;
         EventsKeys.forEach(key => {
           // Always update event handlers after each render
           if (fromEl[key]) fromEl[key] = toEl[key];
@@ -1084,7 +1084,8 @@ function update(Store) {
 var globals = {
   SYSTEM_DB_USER_ID: '0000000-system-000000',
   WINDOW_APP_DATA: '__appData__',
-  GET_MODEL_DATA_METHOD: '@server-model.getData'
+  GET_MODEL_DATA_METHOD: '@server-model.getData',
+  IMPORT_STYLIS: 'import \'/js/dev/3rd/stylis.js\';'
 };
 
 function getDataFromServer(Store) {
@@ -1105,7 +1106,7 @@ function getDataFromServer(Store) {
       Store.methods.callServer(globals.GET_MODEL_DATA_METHOD, requestArgs).then(items => {
         if (!items) reject('Could not get data from server');
         const newTimestamp = Date.now();
-        resolve({
+        return resolve({
           instance,
           items,
           newTimestamp
@@ -1122,7 +1123,7 @@ function syncDataToDB({
 }) {
   let counter = 0;
   return new Promise(resolve => {
-    if (items.length === 0) resolve({
+    if (items.length === 0) return resolve({
       instance,
       counter,
       newTimestamp
@@ -1133,23 +1134,26 @@ function syncDataToDB({
     requestPrevRecords.onsuccess = () => {
       const previousRecords = requestPrevRecords.result;
       items.forEach(item => {
-        if (item.attrs.length > 0) {
-          const findRecord = previousRecords.find(rec => rec._id === item._id);
-          const putRequest = modelStore.put({
-            _id: item._id,
-            domain: item.domain,
-            attrs: findRecord ? [...findRecord.attrs, ...item.attrs] : item.attrs
-          });
+        if (item.attrs.length === 0) return resolve({
+          instance,
+          counter,
+          newTimestamp
+        });
+        const findRecord = previousRecords.find(rec => rec._id === item._id);
+        const putRequest = modelStore.put({
+          _id: item._id,
+          domain: item.domain,
+          attrs: findRecord ? [...findRecord.attrs, ...item.attrs] : item.attrs
+        });
 
-          putRequest.onsuccess = () => {
-            counter++;
-            if (counter === items.length) resolve({
-              instance,
-              counter,
-              newTimestamp
-            });
-          };
-        }
+        putRequest.onsuccess = () => {
+          counter++;
+          if (counter === items.length) return resolve({
+            instance,
+            counter,
+            newTimestamp
+          });
+        };
       });
     };
   });
@@ -1200,7 +1204,7 @@ function updateDBControl({
     });
 
     putRequest.onsuccess = () => {
-      resolve({
+      return resolve({
         instance
       });
     };
@@ -1587,6 +1591,8 @@ function createStore(definition) {
     },
     observables,
     computed,
+    values: {},
+    // just static values, acts as a global container and has no methods attached
     listeners: [],
     reactions: [],
     alerts: []
@@ -1648,7 +1654,7 @@ function createStore(definition) {
   return Store;
 }
 
-function registerStyles(registerNumber, styledRules, isBrowser, isProduction) {
+function addStylesToHead(registerNumber, styledRules, isBrowser, isProduction) {
   if (!styledRules) return;
 
   if (isBrowser && !isProduction) {
@@ -1660,7 +1666,7 @@ function registerStyles(registerNumber, styledRules, isBrowser, isProduction) {
   }
 }
 
-function processStyle(stylis) {
+function parseStyleRules(stylis) {
   return (key, rules) => {
     if (!stylis) return `.${key} {${rules.replace(/(\s\s\s*)/g, ' ')}} `;
     if (key) return stylis(`.${key}`, rules); // Inline styles does not need the class selector
@@ -1679,20 +1685,21 @@ function getClassesRules(stylis) {
     if (!componentDefClasses) return null;
     const classKeys = Object.keys(componentDefClasses);
     return classKeys.reduce((acum, key) => {
-      const newClassName = getClassNewName(key, componentDefId);
-      return `${acum}${processStyle(stylis)(newClassName, componentDefClasses[key])}`;
+      const newClassName = getClassNewName(key, componentDefId); // const
+
+      return `${acum}${parseStyleRules(stylis)(newClassName, componentDefClasses[key])}`;
     }, '');
   };
 }
 
-function getStyles(stylis) {
+function prefixInlineStyles(stylis) {
   return (componentStyles = {}) => {
     const styleKeys = Object.keys(componentStyles); // Return only inlineStyles to be attached to the component
 
     return styleKeys.reduce((acum, key) => {
       const styleDefinition = componentStyles[key];
       return { ...acum,
-        [key]: processStyle(stylis)(null, styleDefinition)
+        [key]: (...args) => parseStyleRules(stylis)(null, styleDefinition(...args))
       };
     }, {});
   };
@@ -1700,17 +1707,17 @@ function getStyles(stylis) {
 
 var styles = (stylis => ({
   getClassesRules: getClassesRules(stylis),
-  getStyles: getStyles(stylis),
-  registerStyles,
+  prefixInlineStyles: prefixInlineStyles(stylis),
+  addStylesToHead,
   getClassNewName
 }));
 
 function getFinalProps(args) {
-  const props = args.props || {};
   const {
+    props = {},
     store,
     componentDef,
-    processedStyles,
+    inlineStyles,
     utils
   } = args;
   const state = componentDef.state ? componentDef.state(props, store) : {};
@@ -1722,7 +1729,7 @@ function getFinalProps(args) {
     props,
     state,
     actions,
-    styles: processedStyles,
+    styles: inlineStyles,
     classes,
     utils
   };
@@ -1740,6 +1747,7 @@ function getStore(Store, componentDefId) {
     callServer: Store.methods.callServer,
     get: Store.methods.get(componentDefId),
     route: Store.router.route,
+    values: Store.objects.values,
     utils: {
       get: Store.utils.get,
       uid: Store.utils.uid,
@@ -1759,9 +1767,9 @@ var createHoc = ((Store, {
     isProduction
   } = appData;
   const {
-    registerStyles,
+    addStylesToHead,
     getClassesRules,
-    getStyles
+    prefixInlineStyles
   } = styles(stylis); // In browser clean component-styles on each refresh
 
   if (isBrowser && !isProduction) {
@@ -1774,15 +1782,13 @@ var createHoc = ((Store, {
 
     Store.render.registerComponent(componentDef);
     const classesRules = getClassesRules(componentDef.id, componentDef.classes);
-    registerStyles(componentDef.id, classesRules, isBrowser, isProduction);
+    addStylesToHead(componentDef.id, classesRules, isBrowser, isProduction);
     const store = getStore(Store);
     const utils = store.utils;
-    const processedStyles = getStyles(componentDef.styles);
+    const inlineStyles = prefixInlineStyles(componentDef.styles);
     return function renderComponent(props, children) {
       if (!Store.objects.flags.IS_MOUNTED && componentDef.mounted) {
-        Store.methods.on('MOUNTED', () => {
-          componentDef.mounted(props, store);
-        });
+        Store.methods.on('MOUNTED', () => componentDef.mounted(props, store));
       }
 
       const allProps = getFinalProps({
@@ -1790,7 +1796,7 @@ var createHoc = ((Store, {
         utils,
         store,
         componentDef,
-        processedStyles
+        inlineStyles
       });
       const domNode = componentDef.render(allProps, children);
       return domNode;
@@ -1893,7 +1899,7 @@ function createScript(scriptId, src) {
   document.body.appendChild(script);
 }
 
-var prepareComponents = ((client, family, components, startWith) => {
+var addIdToComponents = ((client, family, components, startWith) => {
   let id = startWith;
   Object.keys(components).forEach(key => {
     const moduleDef = components[key];
@@ -1948,9 +1954,9 @@ function createClient(args, options) {
 
   client.lib = lib; // Components && Fragments
 
-  prepareComponents(client, 'components', components, 4000);
-  prepareComponents(client, 'fragments', fragments, 3000);
-  prepareComponents(client, 'pages', pages, 2000);
+  addIdToComponents(client, 'components', components, 4000);
+  addIdToComponents(client, 'fragments', fragments, 3000);
+  addIdToComponents(client, 'pages', pages, 2000);
   return client;
 }
 

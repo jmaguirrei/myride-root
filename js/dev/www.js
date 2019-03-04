@@ -11,8 +11,6 @@ var store = {
     user_id: '',
     language: 'en',
     // pages
-
-    /*      currentPage      -----------      Start with '' because Root component will be using props.currentPage in SSR      Values: home, agreements, faq, help    */
     currentPage: '',
     // Menu
     isMenuOpen: false,

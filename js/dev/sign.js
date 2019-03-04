@@ -381,34 +381,10 @@ var store = {
     // Domain properties
     user_id: '',
     language: 'en',
-
-    /*      currentPage      -----------      Start with '' because Root component will be using props.currentPage in SSR      Values: welcome, signin, signup, forgot    */
+    // pages
     currentPage: '',
     // Menu
-    isMenuOpen: false,
-    // signup
-    'signup.currentStep': 0,
-    // 0: Name, Email, Password, 1: Token
-    'signup.name': '',
-    'signup.email': '',
-    'signup.password': '',
-    'signup.password.isVisible': false,
-    'signup.tokenDigits': '',
-    'signup.buttonPressed': false,
-    // signin
-    // 'signin.name': '', // used ??
-    'signin.email': '',
-    'signin.password': '',
-    'signin.password.isVisible': false,
-    'signin.buttonPressed': false,
-    // forgot
-    'forgot.currentStep': 0,
-    // 0: Password, 1: Token
-    'forgot.email': '',
-    'forgot.password': '',
-    'forgot.password.isVisible': false,
-    'forgot.tokenDigits': '',
-    'forgot.buttonPressed': false
+    isMenuOpen: false
   }
 };
 
@@ -1474,25 +1450,11 @@ var Token = ((client, id) => {
       };
     },
 
-    styles: {
-      wrapper: `
-        padding: 5px 10px;
-        position: relative;
-        display: flex;
-        flex-flow: column;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-      `,
-      title: `
-        font-size: 20px;
-        padding: 10px 20px;
-      `
-    },
+    classes: false,
 
     render({
       state,
-      styles,
+      classes,
       actions,
       utils
     }) {
@@ -1500,9 +1462,9 @@ var Token = ((client, id) => {
         tokenDigits
       } = state;
       return client.h("div", {
-        style: styles.wrapper
+        "class": classes('wrapper')
       }, client.h("div", {
-        style: styles.title
+        "class": classes('title')
       }, utils.localize({
         en: 'Enter the code received by email',
         es: 'Ingresa el código recibido por email'
@@ -1527,28 +1489,14 @@ var Token = ((client, id) => {
 var Done = ((client, id) => {
   return client.hoc({
     id,
-    styles: {
-      wrapper: `
-        padding: 5px 10px;
-        position: relative;
-        display: flex;
-        flex-flow: column;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-      `,
-      title: `
-        font-size: 20px;
-        padding: 10px 20px;
-      `
-    },
+    classes: false,
 
     render({
-      styles,
+      classes,
       utils
     }) {
       return client.h("div", {
-        style: styles.wrapper
+        "class": classes('wrapper')
       }, utils.localize({
         en: 'Password successfully changed!',
         es: '¡La contraseña fue cambiada con éxito!'
@@ -2170,25 +2118,11 @@ var Token$1 = ((client, id) => {
       };
     },
 
-    styles: {
-      wrapper: `
-        padding: 5px 10px;
-        position: relative;
-        display: flex;
-        flex-flow: column;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-      `,
-      title: `
-        font-size: 20px;
-        padding: 10px 20px;
-      `
-    },
+    classes: false,
 
     render({
       state,
-      styles,
+      classes,
       actions,
       utils
     }) {
@@ -2196,9 +2130,9 @@ var Token$1 = ((client, id) => {
         tokenDigits
       } = state;
       return client.h("div", {
-        style: styles.wrapper
+        "class": classes('wrapper')
       }, client.h("div", {
-        style: styles.title
+        "class": classes('title')
       }, utils.localize({
         en: 'Enter the code received by email',
         es: 'Ingresa el código recibido por email'
@@ -2223,38 +2157,22 @@ var Token$1 = ((client, id) => {
 var Welcome = ((client, id) => {
   return client.hoc({
     id,
-    styles: {
-      wrapper: `
-        display: flex;
-        flex-flow: column;
-        height: 100%;
-        justify-content: center;
-        align-items: center;
-      `,
-      title: `
-        font-size: 26px;
-        padding: 20px;
-      `,
-      subtitle: `
-        font-size: 20px;
-        color: hsl(0, 0%, 35%);
-      `
-    },
+    classes: false,
 
     render({
-      styles,
+      classes,
       utils
     }) {
       return client.h("div", {
         id: 'welcome',
-        style: styles.wrapper
+        style: classes('wrapper')
       }, client.h("div", {
-        style: styles.title
+        "class": classes('title')
       }, utils.localize({
         en: 'Welcome! 🎉🎉',
         es: '¡Bienvenid@! 🎉🎉'
       })), client.h("div", {
-        style: styles.subtitle
+        "class": classes('subtitle')
       }, utils.localize({
         en: 'You successfully registered your account',
         es: 'Has registrado exitosamente tu cuenta'
