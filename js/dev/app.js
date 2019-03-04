@@ -214,7 +214,11 @@ var GoogleMaps = ((client, id) => {
       client.createScript('googlemaps-script', url);
     },
 
-    classes: false,
+    classes: {
+      map: `
+        height: 100vh;
+      `
+    },
 
     render({
       props,
@@ -223,7 +227,7 @@ var GoogleMaps = ((client, id) => {
     }) {
       return client.h("div", {
         id: 'map-wrapper',
-        "class": classes.map,
+        "class": classes('map'),
         onclick: actions.onclick
       });
     }
@@ -471,7 +475,15 @@ var rootComponent = ((client, id) => {
       };
     },
 
-    classes: false,
+    classes: {
+      root: `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      `
+    },
 
     render({
       actions,
@@ -488,21 +500,21 @@ var rootComponent = ((client, id) => {
       } = state;
       return client.h("div", {
         id: 'root',
-        "class": classes.root
+        "class": classes('root')
       }, client.h(MenuIcon, {
         isOpen: isMenuOpen,
         onClick: onClickMenu,
         color: 'white',
         inStyle: 'left: 12px; top: 12px;'
       }), client.h(Header, {
-        isMenuOpen,
+        isMenuOpen: isMenuOpen,
         logoSrc: client.lib.Paths.LOGO_LIGHT
       }), client.h(Menu, {
-        isMenuOpen,
+        isMenuOpen: isMenuOpen,
         logoSrc: client.lib.Paths.LOGO_LIGHT,
         options: menuOptions
       }), client.h(Pages, {
-        currentPage,
+        currentPage: currentPage,
         pages: {
           app: App
         }

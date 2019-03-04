@@ -92,7 +92,7 @@
   <script type='module'>/* eslint-disable */
     import { client } from '/js/{{ node_env }}/client.js';
     import { main } from '/js/{{ node_env }}/{{ module_name }}.js';
-    main(client, true);
+    main(client, { isBrowser: true });
   </script>
   <noscript>Your browser does not support JavaScript!</noscript>
 </html>

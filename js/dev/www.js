@@ -673,9 +673,6 @@ var Pages = ((client, id) => {
     classes: false,
     styles: {
       page: isSelected => `
-        position: absolute;
-        width: 100%;
-        transition: opacity .3s ease;
         opacity: ${isSelected ? 1 : 0};
         pointer-events: ${isSelected ? 'auto' : 'none'};
       `
