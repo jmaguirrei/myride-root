@@ -1,4 +1,4 @@
 User-Agent: *
 Disallow:
 
-Sitemap: https://museeker.io/assets/sitemap.txt
+Sitemap: https://jmaguirre.com/assets/sitemap.txt

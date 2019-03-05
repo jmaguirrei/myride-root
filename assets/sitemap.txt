@@ -1,7 +1,9 @@
-https://museeker.io/
-https://museeker.io/app/
-https://museeker.io/signin/
-https://museeker.io/signup/
-https://museeker.io/forgot/
-https://museeker.io/welcome/
-https://museeker.io/home/
+https://jmaguirre.com/myride/
+https://jmaguirre.com/myride/app/
+https://jmaguirre.com/myride/signin/
+https://jmaguirre.com/myride/signup/
+https://jmaguirre.com/myride/forgot/
+https://jmaguirre.com/myride/home/
+https://jmaguirre.com/myride/agreements/
+https://jmaguirre.com/myride/faq/
+https://jmaguirre.com/myride/help/

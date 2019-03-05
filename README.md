@@ -10,3 +10,5 @@ pm2 flush
 ## Stop and Del process
 pm2 del 0 1 2
 
+# Update GIT Repos and restart PROCESS
+bash /home/jmaguirrei/apps/myride/update.sh
