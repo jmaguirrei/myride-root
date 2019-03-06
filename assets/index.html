@@ -90,8 +90,8 @@
     {{ data_script_placeholder }}
   </body>
   <script type='module'>
-    import { client } from '/js/dev/client.js';
-    import { main } from '/js/dev/{{ module_name }}.js';
+    import { client } from '/js/{{ node_env }}/client.js';
+    import { main } from '/js/{{ node_env }}/{{ module_name }}.js';
     {{ import_stylis }}
     main(client, { isBrowser: true, stylis: window.stylis });
   </script>
