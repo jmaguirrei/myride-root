@@ -1291,7 +1291,7 @@ function getCurrentAttrs(attrs) {
 
 function hydrate(Store) {
   return data => {
-    if (data.length > 0) {
+    if (data && data.length > 0) {
       Store.db.data = data.reduce((acum, item) => {
         const {
           _id,
@@ -1692,25 +1692,36 @@ function getClassesRules(stylis) {
   };
 }
 
-function prefixInlineStyles(stylis) {
-  return (componentStyles = {}) => {
-    const styleKeys = Object.keys(componentStyles); // Return only inlineStyles to be attached to the component
+const prefixes = ['', '-webkit-', '-moz-'];
+const toBePrefixed = ['transform', 'border-radius'];
 
-    return styleKeys.reduce((acum, key) => {
-      const styleDefinition = componentStyles[key];
-      return { ...acum,
-        [key]: (...args) => parseStyleRules(stylis)(null, styleDefinition(...args))
-      };
-    }, {});
+function prefix(str) {
+  const applyPrefix = (prop, value) => {
+    if (!toBePrefixed.includes(prop)) return `${prop}:${value}`;
+    return prefixes.reduce((acum, pref) => `${acum}${pref}${prop}:${value};`, '');
   };
+
+  const prefRegex = new RegExp(`(${toBePrefixed.join('|')}):(.+)`, 'g');
+  return str.replace(prefRegex, (...args) => applyPrefix(args[1], args[2])).replace(/^\s+|\s+$|\s+(?=\s)/g, '').replace(/\t/gm, '').replace(/\n/gm, '').replace(/;;/g, ';');
 }
 
-var styles = (stylis => ({
-  getClassesRules: getClassesRules(stylis),
-  prefixInlineStyles: prefixInlineStyles(stylis),
+function prefixInlineStyles(componentStyles = {}) {
+  const styleKeys = Object.keys(componentStyles); // Return only inlineStyles to be attached to the component
+
+  return styleKeys.reduce((acum, key) => {
+    const styleDefinition = componentStyles[key];
+    return { ...acum,
+      [key]: (...args) => prefix(styleDefinition(...args))
+    };
+  }, {});
+}
+
+var styles = {
+  getClassesRules,
+  prefixInlineStyles,
   addStylesToHead,
   getClassNewName
-}));
+};
 
 function getFinalProps(args) {
   const {
@@ -1770,7 +1781,7 @@ var createHoc = ((Store, {
     addStylesToHead,
     getClassesRules,
     prefixInlineStyles
-  } = styles(stylis); // In browser clean component-styles on each refresh
+  } = styles; // In browser clean component-styles on each refresh
 
   if (isBrowser && !isProduction) {
     const headStyles = document.getElementById('component-styles');
@@ -1781,7 +1792,7 @@ var createHoc = ((Store, {
     if (!componentDef.id) componentDef.id = 1000; // Default value, used for rootComponent
 
     Store.render.registerComponent(componentDef);
-    const classesRules = getClassesRules(componentDef.id, componentDef.classes);
+    const classesRules = getClassesRules(stylis)(componentDef.id, componentDef.classes);
     addStylesToHead(componentDef.id, classesRules, isBrowser, isProduction);
     const store = getStore(Store);
     const utils = store.utils;
@@ -1908,19 +1919,6 @@ var addIdToComponents = ((client, family, components, startWith) => {
   });
 });
 
-var prefix = ((property, value) => {
-  if (property === 'transform') {
-    return `
-      -webkit-transform: ${value};
-      -ms-transform: ${value};
-      transform: ${value};
-    `;
-  }
-
-  console.log('PREFIX not found ------------------------------------------>', property);
-  return `${property}: ${value};`;
-});
-
 function createClient(args, options) {
   const {
     Store,
@@ -1942,8 +1940,7 @@ function createClient(args, options) {
       fragments: {},
       pages: {}
     },
-    createScript,
-    prefix
+    createScript
   }; // Store is necessary to create the HOC
 
   client.hoc = createHoc(Store, {

@@ -101,33 +101,11 @@ var lib = /*#__PURE__*/Object.freeze({
 });
 
 const size = 30;
-const lineW = 78; // %
-
-const lineH = Math.floor(size / 12);
 const transY = Math.ceil(0.25 * size);
 var MenuIcon = ((client, id) => {
   return client.hoc({
     id,
-    classes: {
-      wrapper: `
-        position: absolute;
-        display: flex;
-        flex-flow: column;
-        justify-content: center;
-        height: ${size}px;
-        width: ${size}px;
-        cursor: pointer;
-      `,
-      line: `
-        position: absolute;
-        width: ${lineW}%;
-        left: ${0.5 * (100 - lineW)}%;
-        height: ${lineH}px;
-        border-radius: ${size}px;
-        transition: all .4s cubic-bezier(0.65, 0.04, 0.29, 0.97);
-        transform-origin: center center;
-      `
-    },
+    classes: false,
     styles: {
       wrapper: ({
         inStyle
@@ -209,9 +187,7 @@ var GoogleMaps = ((client, id) => {
               visibility: 'off'
             }]
           }]
-        }); // store.values.mapObject.setOptions({
-        // });
-
+        });
         window.navigator.geolocation.getCurrentPosition(position => {
           const {
             latitude,
@@ -232,11 +208,7 @@ var GoogleMaps = ((client, id) => {
       client.createScript('googlemaps-script', url);
     },
 
-    classes: {
-      map: `
-        height: 100vh;
-      `
-    },
+    classes: false,
 
     render({
       classes,
@@ -286,11 +258,7 @@ var MapMarker = ((client, id) => {
       client.createScript('googlemaps-script', url);
     },
 
-    classes: {
-      map: `
-        height: 100vh;
-      `
-    },
+    classes: false,
 
     render({
       props,
@@ -318,16 +286,7 @@ var components = /*#__PURE__*/Object.freeze({
 var Header = ((client, id) => {
   return client.hoc({
     id,
-    classes: {
-      header: `
-        display: flex;
-        align-items: center;
-        width: 100%;
-        justify-content: center;
-        height: ${client.lib.Sizes.HEADER_HEIGHT};
-        background: ${client.lib.Colors.GREY_DARK};
-      `
-    },
+    classes: false,
     styles: {
       logo: isMenuOpen => `
         opacity: ${isMenuOpen ? 0 : 1};
@@ -356,41 +315,7 @@ var Header = ((client, id) => {
 var Menu = ((client, id) => {
   return client.hoc({
     id,
-    classes: {
-      menu: `
-        position: absolute;
-        display: flex;
-        flex-flow: column;
-        align-items: center;
-        width: 100%;
-        height: 100vh;
-        z-index: 10;
-        transition: opacity .4s ease;
-      `,
-      logo: `
-        max-width: 60%;
-        margin: 12%;
-      `,
-      link: `
-        font-size: 20px;
-        padding: 16px;
-        cursor: pointer;
-        color: white;
-      `,
-      button: `
-        margin-top: 60px;
-        padding: 10px;
-        cursor: pointer;
-        width: 60%;
-        text-align: center;
-        color: white;
-        font-size: 20px;
-        text-shadow: 0px 1px 2px hsla(0, 0%, 0%, 0.8);
-        background: ${client.lib.Colors.BLUE_SIGNIN};
-        border-radius: 12px;
-        box-shadow: 0px 1px 1px -1px black;
-      `
-    },
+    classes: false,
     styles: {
       menu: isMenuOpen => `
         background: ${client.lib.Colors.GREY_DARK};
@@ -548,15 +473,7 @@ var rootComponent = ((client, id) => {
       };
     },
 
-    classes: {
-      root: `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-      `
-    },
+    classes: false,
 
     render({
       actions,
