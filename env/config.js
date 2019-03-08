@@ -39,8 +39,8 @@ export const config = path => ({
   },
 
   _root: {
-    baseUrl: isProduction ? 'jmaguirre.com/myride' : 'localhost',
-    // baseUrl: 'localhost',
+    baseServer: isProduction ? 'jmaguirre.com' : 'localhost',
+    baseFolder: isProduction ? 'myride' : '',
     sendrigApiKey: SENDGRID_API_KEY,
     mongoURI: MONGO_URI,
     rootFolder: path.join(__dirname, '../'),
