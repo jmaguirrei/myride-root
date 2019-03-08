@@ -250,7 +250,7 @@ function route(Store) {
       baseServer,
       baseFolder
     } = Store.router.appData;
-    const urlToGo = baseFolder ? `${baseFolder}/${page}${complement}` : `${page}${complement}`; // If page is on same service we use history object and just replace it
+    const urlToGo = baseFolder ? `/${baseFolder}/${page}${complement}` : `${page}${complement}`; // If page is on same service we use history object and just replace it
 
     const findPageModule = Object.keys(routes).reduce((acum, key) => {
       if (routes[key].includes(page)) return key;
@@ -258,8 +258,6 @@ function route(Store) {
     }, false);
 
     if (findPageModule && findPageModule === moduleName) {
-      console.log("urlToGo", urlToGo);
-      console.log("page", page);
       window.history.replaceState(null, null, urlToGo);
     } else {
       // Otherwise, in development we need to consider the right port
