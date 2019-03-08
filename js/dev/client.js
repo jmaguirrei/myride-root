@@ -210,7 +210,7 @@ function callServer(Store) {
     //   const queryStr = `${key}=${queryStringObject[key]}`;
     //   if (index === 0) return `${acum}?${queryStr}`;
     //   return `${acum}&${queryStr}`;
-    // }, `${baseUrl}/${path}`);
+    // }, `${baseServer}/${path}`);
     return new Promise((resolve, reject) => {
       // Form the http request as a JSON type
       const xhr = new window.XMLHttpRequest();
@@ -241,15 +241,16 @@ function callServer(Store) {
 }
 
 function route(Store) {
-  return (page, complement) => {
+  return (page, complement = '') => {
     const {
       moduleName,
       routes,
       ports,
       isProduction,
-      baseUrl
+      baseServer,
+      baseFolder
     } = Store.router.appData;
-    const urlToGo = complement ? `${page}${complement}` : page; // If page is on same service we use history object and just replace it
+    const urlToGo = baseFolder ? `${baseFolder}/${page}${complement}` : `${page}${complement}`; // If page is on same service we use history object and just replace it
 
     const findPageModule = Object.keys(routes).reduce((acum, key) => {
       if (routes[key].includes(page)) return key;
@@ -260,7 +261,7 @@ function route(Store) {
       window.history.replaceState(null, null, urlToGo);
     } else {
       // Otherwise, in development we need to consider the right port
-      const url = isProduction ? `/${urlToGo}` : `https://${baseUrl}:${ports[findPageModule].http}/${urlToGo}`;
+      const url = isProduction ? `/${urlToGo}` : `https://${baseServer}:${ports[findPageModule].http}/${urlToGo}`;
       window.location.replace(url);
     }
   };
@@ -1451,18 +1452,18 @@ function startApp(Store) {
     const {
       currentPage,
       query,
-      baseUrl,
-      // baseFolder,
+      baseServer,
+      baseFolder,
       moduleName,
       ports,
       isProduction,
       useServiceWorker
     } = appData;
     Store.router.appData = appData;
-    Store.router.siteUrl = isProduction ? `https://${baseUrl}` // ? `https://${baseUrl}/${baseFolder}`
-    : `https://${baseUrl}:${ports[moduleName].http}`;
-    Store.router.socketUrl = !ports[moduleName].socket ? null : isProduction ? `wss://${baseUrl}` // ? `wss://${baseUrl}/${baseFolder}`
-    : `ws://${baseUrl}:${ports[moduleName].socket}`;
+    Store.router.siteUrl = isProduction ? `https://${baseServer}${baseFolder ? `/${baseFolder}` : ''}` // ? `https://${baseServer}/${baseFolder}`
+    : `https://${baseServer}:${ports[moduleName].http}${baseFolder ? `/${baseFolder}` : ''}`;
+    Store.router.socketUrl = !ports[moduleName].socket ? null : isProduction ? `wss://${baseServer}` // ? `wss://${baseServer}/${baseFolder}`
+    : `ws://${baseServer}:${ports[moduleName].socket}`;
     /* ------------------------------------------------------------------------------------------------  Register Service Worker------------------------------------------------------------------------------------------------ */
 
     if (useServiceWorker && 'serviceWorker' in window.navigator) {
