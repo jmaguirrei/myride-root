@@ -258,6 +258,8 @@ function route(Store) {
     }, false);
 
     if (findPageModule && findPageModule === moduleName) {
+      console.log("urlToGo", urlToGo);
+      console.log("page", page);
       window.history.replaceState(null, null, urlToGo);
     } else {
       // Otherwise, in development we need to consider the right port
