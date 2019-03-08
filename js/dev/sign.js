@@ -381,10 +381,34 @@ var store = {
     // Domain properties
     user_id: '',
     language: 'en',
-    // pages
+
+    /*      currentPage      -----------      Start with '' because Root component will be using props.currentPage in SSR      Values: welcome, signin, signup, forgot    */
     currentPage: '',
     // Menu
-    isMenuOpen: false
+    isMenuOpen: false,
+    // signup
+    'signup.currentStep': 0,
+    // 0: Name, Email, Password, 1: Token
+    'signup.name': '',
+    'signup.email': '',
+    'signup.password': '',
+    'signup.password.isVisible': false,
+    'signup.tokenDigits': '',
+    'signup.buttonPressed': false,
+    // signin
+    // 'signin.name': '', // used ??
+    'signin.email': '',
+    'signin.password': '',
+    'signin.password.isVisible': false,
+    'signin.buttonPressed': false,
+    // forgot
+    'forgot.currentStep': 0,
+    // 0: Password, 1: Token
+    'forgot.email': '',
+    'forgot.password': '',
+    'forgot.password.isVisible': false,
+    'forgot.tokenDigits': '',
+    'forgot.buttonPressed': false
   }
 };
 
