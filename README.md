@@ -20,5 +20,5 @@ sudo nano /var/log/nginx/access.log
 sudo nano /var/log/nginx/error.log
 sudo nano /etc/nginx/nginx.conf
 sudo nano /etc/nginx/conf.d/jmaguirre.conf
-sudo nano /home/jmaguirrei/apps/myride/_root/env/nginx_conf
+sudo nano /home/jmaguirrei/sites/myride/_root/env/nginx.myride.conf
 
