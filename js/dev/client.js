@@ -261,7 +261,7 @@ function route(Store) {
       window.history.replaceState(null, null, urlToGo);
     } else {
       // Otherwise, in development we need to consider the right port
-      const url = isProduction ? `/${urlToGo}` : `https://${baseServer}:${ports[findPageModule].http}/${urlToGo}`;
+      const url = isProduction ? `https://${baseServer}${urlToGo}` : `https://${baseServer}:${ports[findPageModule].http}${urlToGo}`;
       window.location.replace(url);
     }
   };
