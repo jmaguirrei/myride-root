@@ -5,9 +5,9 @@ bash /home/jmaguirrei/apps/myride/update.sh
 
 
 ## PM2
-pm2 start start.js --env production --name myride-app
-pm2 start start.js --env production --name myride-sign
-pm2 start start.js --env production --name myride-www
+NODE_ENV=production pm2 start start.js --name myride-app
+NODE_ENV=production pm2 start start.js --name myride-sign
+NODE_ENV=production pm2 start start.js --name myride-www
 pm2 flush
 pm2 del 0 1 2
 pm2 list
