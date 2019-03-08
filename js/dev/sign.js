@@ -1063,7 +1063,7 @@ var Alerts = ((client, id) => {
     styles: {
       alert: isVisible => `
         opacity: ${isVisible ? 1 : 0};
-        ${client.prefix('transform', `translateY(${isVisible ? 0 : -100}%)`)}
+        transform: translateY(${isVisible ? 0 : -100}%);
       `
     },
 
@@ -1533,7 +1533,7 @@ var Forgot = ((client, id) => {
         width: 300%;
         display: flex;
         transition: all .6s ease;
-        ${client.prefix('transform', `translateX(${currentStep * -33.33}%)`)}
+        transform: translateX(${currentStep * -33.33}%);
       `
     },
 
@@ -2209,7 +2209,7 @@ var SignUp = ((client, id) => {
       carrousel: currentStep => `
         width: 300%;
         display: flex;
-        ${client.prefix('transform', `translateX(${currentStep * -33.33}%)`)}
+        transform: translateX(${currentStep * -33.33}%);
         transition: all .6s ease;
       `
     },
