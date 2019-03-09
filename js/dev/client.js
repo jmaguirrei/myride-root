@@ -214,7 +214,12 @@ function callServer(Store) {
     return new Promise((resolve, reject) => {
       // Form the http request as a JSON type
       const xhr = new window.XMLHttpRequest();
-      xhr.open('POST', `${Store.router.siteUrl}/api/methods`, true);
+      const {
+        siteUrl,
+        appData
+      } = Store.router;
+      const postUrl = `${siteUrl}/${appData.moduleName}-api/methods`;
+      xhr.open('POST', postUrl, true);
       xhr.setRequestHeader('Content-type', 'application/json'); // For each header sent, add it to the request
       // Object.keys(headers).forEach(key => {
       //   xhr.setRequestHeader(key, headers[key]);
@@ -1460,10 +1465,8 @@ function startApp(Store) {
       useServiceWorker
     } = appData;
     Store.router.appData = appData;
-    Store.router.siteUrl = isProduction ? `https://${baseServer}${baseFolder ? `/${baseFolder}` : ''}` // ? `https://${baseServer}/${baseFolder}`
-    : `https://${baseServer}:${ports[moduleName].http}${baseFolder ? `/${baseFolder}` : ''}`;
-    Store.router.socketUrl = !ports[moduleName].socket ? null : isProduction ? `wss://${baseServer}` // ? `wss://${baseServer}/${baseFolder}`
-    : `ws://${baseServer}:${ports[moduleName].socket}`;
+    Store.router.siteUrl = isProduction ? `https://${baseServer}${baseFolder ? `/${baseFolder}` : ''}` : `https://${baseServer}:${ports[moduleName].http}${baseFolder ? `/${baseFolder}` : ''}`;
+    Store.router.socketUrl = !ports[moduleName].socket ? null : isProduction ? `wss://${baseServer}` : `ws://${baseServer}:${ports[moduleName].socket}`;
     /* ------------------------------------------------------------------------------------------------  Register Service Worker------------------------------------------------------------------------------------------------ */
 
     if (useServiceWorker && 'serviceWorker' in window.navigator) {
