@@ -1470,8 +1470,7 @@ function startApp(Store) {
     /* ------------------------------------------------------------------------------------------------  Register Service Worker------------------------------------------------------------------------------------------------ */
 
     if (useServiceWorker && 'serviceWorker' in window.navigator) {
-      const swFolder = isProduction ? 'prod' : 'dev';
-      window.navigator.serviceWorker.register(`js/${swFolder}/sw.js`, {
+      window.navigator.serviceWorker.register('sw.js', {
         scope: '/'
       }).then(registration => {
         console.log('Service Worker registration OK!', registration);
