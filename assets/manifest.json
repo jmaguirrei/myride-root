@@ -1,26 +1,26 @@
 {
   "version": "1.0.0",
-  "name": "Museeker App",
-  "short_name": "Museeker",
-  "description": "App to make great music online",
+  "name": "MyRide App",
+  "short_name": "My Ride",
+  "description": "My Ride App",
   "icons": [
     {
-      "src": "assets/icons/icon_192x192.png",
+      "src": "myride/assets/icons/icon_192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "assets/icons/icon_256x256.png",
+      "src": "myride/assets/icons/icon_256x256.png",
       "sizes": "256x256",
       "type": "image/png"
     },
     {
-      "src": "assets/icons/icon_512x512.png",
+      "src": "myride/assets/icons/icon_512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ],
-  "start_url": "/app",
+  "start_url": "/myride/app",
   "display": "standalone",
   "background_color": "#6A2182",
   "theme_color": "#F8D61C"
