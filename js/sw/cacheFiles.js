@@ -1,8 +1,6 @@
 
 export const cacheFilesBefore = [
 
-  './',
-
   // icons needed early (in manifest or favicons)
   './assets/icons/icon_32x32.png',
   './assets/icons/icon_16x16.png',
@@ -18,6 +16,7 @@ export const cacheFilesAfter = [
   './js/prod/app.js',
   './js/prod/sign.js',
   './js/prod/www.js',
+  './js/prod/sw.js',
 
   // google
   // 'https://www.googletagmanager.com/gtag/js?id=UA-104340277-2',

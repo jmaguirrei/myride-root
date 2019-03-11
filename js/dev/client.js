@@ -1465,8 +1465,9 @@ function startApp(Store) {
       useServiceWorker
     } = appData;
     Store.router.appData = appData;
-    Store.router.siteUrl = isProduction ? `https://${baseServer}${baseFolder ? `/${baseFolder}` : ''}` : `https://${baseServer}:${ports[moduleName].http}${baseFolder ? `/${baseFolder}` : ''}`;
-    Store.router.socketUrl = !ports[moduleName].socket ? null : isProduction ? `wss://${baseServer}` : `ws://${baseServer}:${ports[moduleName].socket}`;
+    const baseFolderNorm = baseFolder ? `/${baseFolder}` : '';
+    Store.router.siteUrl = isProduction ? `https://${baseServer}${baseFolderNorm}` : `https://${baseServer}:${ports[moduleName].http}${baseFolderNorm}`;
+    Store.router.socketUrl = !ports[moduleName].socket ? null : isProduction ? `wss://${baseServer}${baseFolderNorm}/${moduleName}-sockets` : `ws://${baseServer}:${ports[moduleName].socket}${baseFolderNorm}/${moduleName}-sockets`;
     /* ------------------------------------------------------------------------------------------------  Register Service Worker------------------------------------------------------------------------------------------------ */
 
     if (useServiceWorker && 'serviceWorker' in window.navigator) {

@@ -9,10 +9,10 @@ function log(str, payload) {
   return console.log(`[SW] ${filler}> ${str} `, payloadStr);
 }
 
-const cacheFilesBefore = ['./', // icons needed early (in manifest or favicons)
+const cacheFilesBefore = [// icons needed early (in manifest or favicons)
 './assets/icons/icon_32x32.png', './assets/icons/icon_16x16.png', './assets/icons/icon_192x192.png', './assets/icons/icon_256x256.png', './assets/icons/icon_512x512.png'];
 const cacheFilesAfter = [// js
-'./js/prod/client.js', './js/prod/app.js', './js/prod/sign.js', './js/prod/www.js', // google
+'./js/prod/client.js', './js/prod/app.js', './js/prod/sign.js', './js/prod/www.js', './js/prod/sw.js', // google
 // 'https://www.googletagmanager.com/gtag/js?id=UA-104340277-2',
 // 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js',
 // 'https://fonts.googleapis.com/css?family=Source+Sans+Pro',
