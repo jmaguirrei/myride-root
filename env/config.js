@@ -16,7 +16,6 @@ export const config = path => ({
     httpPort: 4001,
     socketPort: null,
     useManifest: false,
-    // useServiceWorker: false,
     useServiceWorker: isProduction,
   },
 
