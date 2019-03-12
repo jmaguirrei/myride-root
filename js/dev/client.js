@@ -218,8 +218,7 @@ function callServer(Store) {
         siteUrl,
         appData
       } = Store.router;
-      const postUrl = `${siteUrl}/${appData.moduleName}-api/methods`;
-      console.log("postUrl", postUrl);
+      const postUrl = `${siteUrl}/${appData.moduleName}/api-methods`;
       xhr.open('POST', postUrl, true);
       xhr.setRequestHeader('Content-type', 'application/json'); // For each header sent, add it to the request
       // Object.keys(headers).forEach(key => {
@@ -232,7 +231,6 @@ function callServer(Store) {
           const statusCode = xhr.status;
           if (![200, 201].includes(statusCode)) return reject('XHR request failed');
           const responseReturned = xhr.responseText;
-          console.log("responseReturned", responseReturned);
           return resolve(JSON.parse(responseReturned));
         }
       }; // Send the payload as JSON
