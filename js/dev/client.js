@@ -219,12 +219,15 @@ function callServer(Store) {
         appData
       } = Store.router;
       const postUrl = `${siteUrl}/${appData.moduleName}-api/methods`;
+      console.log("postUrl", postUrl);
       xhr.open('POST', postUrl, true);
       xhr.setRequestHeader('Content-type', 'application/json'); // For each header sent, add it to the request
       // Object.keys(headers).forEach(key => {
       //   xhr.setRequestHeader(key, headers[key]);
       // });
       // When the request comes back, handle the response
+
+      console.log("xhr", xhr);
 
       xhr.onreadystatechange = () => {
         if (xhr.readyState === window.XMLHttpRequest.DONE) {

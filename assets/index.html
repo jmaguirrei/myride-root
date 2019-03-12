@@ -1,11 +1,9 @@
-
 <!DOCTYPE html>
 <html lang='{{ language }}'>
   <head>
 
     <!-- Google Analytics -->
-<!--     <script>
-      /* eslint-disable */
+    <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -13,28 +11,29 @@
       ga('create', 'UA-104340277-2', 'auto');
       ga('send', 'pageview');
     </script>
- -->
-    <!-- Webfont Loader -->
-<!--     <script>/* eslint-disable */
-      WebFontConfig = {
-        google: {
-          families: [ 'Source Sans Pro' ]
-        }
-      };
 
+    <!-- Webfont Loader -->
+    <script>
+      WebFontConfig = { google: { families: [ 'Source Sans Pro' ] }};
       (function(d) {
         var wf = d.createElement('script'), s = d.scripts[0];
         wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js';
         wf.async = true;
         s.parentNode.insertBefore(wf, s);
       })(document);
-    </script> -->
+    </script>
 
     <!-- Global styles + Component Styles via dynamic classes -->
     <style id='global-styles'>
-      @font-face { font-family: 'Source Sans Pro'; font-display: swap; font-style: normal; font-weight: 400; src: local('Source Sans Pro Regular'), local('SourceSansPro-Regular'), url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xK3dSBYKcSV-LCoeQqfX1RYOo3qOK7lujVj9w.woff2) format('woff2'); }
+      @font-face {
+        font-family: 'Source Sans Pro'; font-style: normal; font-weight: 400;
+        src: local('Source Sans Pro Regular'), local('SourceSansPro-Regular'), url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xK3dSBYKcSV-LCoeQqfX1RYOo3qOK7lujVj9w.woff2) format('woff2');
+      }
       * { box-sizing: border-box; }
-      body { margin: 0; font-family: 'Source Sans Pro', sans-serif; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: rgba(0,0,0,0); }
+      body {
+        margin: 0; font-family: 'Source Sans Pro', sans-serif;
+        -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: rgba(0,0,0,0);
+      }
       svg { user-select: none; }
       a { text-decoration: none; color: inherit; cursor: inherit; }
       button:focus { outline:0; }
@@ -57,7 +56,7 @@
     <link type='image/x-icon' rel='icon' href='./assets/icons/icon_32x32.png'>
     {{ manifest_placeholder }}
 
-    <!-- icons -->
+    <!-- Icons -->
     <link rel='apple-touch-icon' sizes='57x57' href='./assets/icons/icon_57x57.png'>
     <link rel='apple-touch-icon' sizes='60x60' href='./assets/icons/icon_60x60.png'>
     <link rel='apple-touch-icon' sizes='72x72' href='./assets/icons/icon_72x72.png'>
@@ -73,7 +72,7 @@
     <meta name='msapplication-TileColor' content='#6A2182'>
     <meta name='theme-color' content='#ffffff'>
 
-    <!-- splash -->
+    <!-- Splash Screens -->
     <link href='./assets/splash/screen_640x1136.png' media='(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)' rel='apple-touch-startup-image'>
     <link href='./assets/splash/screen_750x1334.png' media='(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)' rel='apple-touch-startup-image'>
     <link href='./assets/splash/screen_1125x2436.png' media='(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)' rel='apple-touch-startup-image'>
@@ -87,8 +86,8 @@
   </head>
   <body>
     {{ root_body }}
-    {{ data_script_placeholder }}
   </body>
+  {{ data_script_placeholder }}
   <script type='module'>
     import { client } from '{{ base_folder }}/js/{{ node_env }}/client.js';
     import { main } from '{{ base_folder }}/js/{{ node_env }}/{{ module_name }}.js';
