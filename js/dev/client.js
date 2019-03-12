@@ -227,13 +227,12 @@ function callServer(Store) {
       // });
       // When the request comes back, handle the response
 
-      console.log("xhr", xhr);
-
       xhr.onreadystatechange = () => {
         if (xhr.readyState === window.XMLHttpRequest.DONE) {
           const statusCode = xhr.status;
           if (![200, 201].includes(statusCode)) return reject('XHR request failed');
           const responseReturned = xhr.responseText;
+          console.log("responseReturned", responseReturned);
           return resolve(JSON.parse(responseReturned));
         }
       }; // Send the payload as JSON
