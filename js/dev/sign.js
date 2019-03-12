@@ -2347,7 +2347,7 @@ var rootComponent = ((client, id) => {
         isOpen: isMenuOpen,
         onClick: onClickMenu,
         color: 'white',
-        inStyle: 'left: 12px; top: 12px;'
+        inStyle: 'left: 12px; bottom: 15px;'
       }), client.h(Header, {
         isMenuOpen: isMenuOpen,
         logoSrc: client.lib.Paths.LOGO_LIGHT

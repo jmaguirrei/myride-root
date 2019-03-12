@@ -1739,6 +1739,7 @@ function getFinalProps(args) {
   const actions = componentDef.actions ? componentDef.actions(props, store) : {};
 
   const classes = (className, globalClassNames) => {
+    if (!globalClassNames) return getClassNewName(className, componentDef.id);
     return `${getClassNewName(className, componentDef.id)} ${globalClassNames}`;
   };
 
