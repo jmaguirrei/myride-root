@@ -2342,7 +2342,7 @@ var rootComponent = ((client, id) => {
       } = state;
       return client.h("div", {
         id: 'root',
-        "class": classes('root')
+        "class": classes('root', 'safe-area')
       }, client.h(MenuIcon, {
         isOpen: isMenuOpen,
         onClick: onClickMenu,
