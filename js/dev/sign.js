@@ -1766,8 +1766,7 @@ var Buttons$1 = ((client, id) => {
         en: 'Login',
         es: 'Entrar'
       })), client.h(Separator, {
-        text: 'o',
-        inStyle: 'margin: 7px 0'
+        text: 'o'
       }), client.h("div", {
         "class": classes('bottomWrapper')
       }, client.h("div", {
