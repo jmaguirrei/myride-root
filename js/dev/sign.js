@@ -1548,15 +1548,14 @@ var Forgot = ((client, id) => {
 
     state(props, store) {
       return {
-        currentStep: store.get('forgot.currentStep'),
-        currentPage: store.get('currentPage')
+        currentStep: store.get('forgot.currentStep')
       };
     },
 
     classes: false,
     styles: {
-      carrousel: (currentStep, currentPage) => `
-        width: ${currentPage === 'forgot' ? 300 : 100}%;
+      carrousel: currentStep => `
+        width: 300%;
         display: flex;
         transition: all .6s ease;
         transform: translateX(${currentStep * -33.33}%);
@@ -1569,14 +1568,15 @@ var Forgot = ((client, id) => {
       classes
     }) {
       const {
-        currentStep,
-        currentPage
+        currentStep
       } = state;
       return client.h("form", {
         id: 'forgot',
         "class": classes('container')
       }, client.h(Alerts, null), client.h(ForgotHeadline, null), client.h("div", {
-        style: styles.carrousel(currentStep, currentPage)
+        "class": classes('noOverflow')
+      }, client.h("div", {
+        style: styles.carrousel(currentStep)
       }, client.h("div", {
         id: 'forgot-step-0',
         "class": classes('step')
@@ -1586,7 +1586,7 @@ var Forgot = ((client, id) => {
       }, client.h(ForgotToken, null)), client.h("div", {
         id: 'forgot-step-2',
         "class": classes('step')
-      }, client.h(ForgotDone, null))), client.h(ForgotButtons, null));
+      }, client.h(ForgotDone, null)))), client.h(ForgotButtons, null));
     }
 
   });
@@ -2229,15 +2229,14 @@ var SignUp = ((client, id) => {
 
     state(props, store) {
       return {
-        currentPage: store.get('currentPage'),
-        currentStep: store.get('signup.currentStep')
+        currentPage: store.get('currentPage')
       };
     },
 
     classes: false,
     styles: {
-      carrousel: (currentStep, currentPage) => `
-        width: ${currentPage === 'signup' ? 300 : 100}%;
+      carrousel: currentStep => `
+        width: 300%;
         display: flex;
         transform: translateX(${currentStep * -33.33}%);
         transition: all .6s ease;
@@ -2250,14 +2249,15 @@ var SignUp = ((client, id) => {
       classes
     }) {
       const {
-        currentStep,
-        currentPage
+        currentStep
       } = state;
       return client.h("form", {
         id: 'sign-up',
         "class": classes('container')
       }, client.h(Alerts, null), client.h(SignUpHeadline, null), client.h("div", {
-        style: styles.carrousel(currentStep, currentPage)
+        "class": classes('noOverflow')
+      }, client.h("div", {
+        style: styles.carrousel(currentStep)
       }, client.h("div", {
         id: 'sign-up-step-0',
         "class": classes('step')
@@ -2267,7 +2267,7 @@ var SignUp = ((client, id) => {
       }, client.h(SignUpToken, null)), client.h("div", {
         id: 'sign-up-step-2',
         "class": classes('step')
-      }, client.h(SignUpWelcome, null))), client.h(SignUpButtons, null));
+      }, client.h(SignUpWelcome, null)))), client.h(SignUpButtons, null));
     }
 
   });
