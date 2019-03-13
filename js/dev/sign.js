@@ -382,7 +382,7 @@ var store = {
     user_id: '',
     language: 'en',
 
-    /*      currentPage      -----------      Start with '' because Root component will be using props.currentPage in SSR      Values: welcome, signin, signup, forgot    */
+    /*      currentPage      -----------      Start with '' because Root component will be using props.currentPage in SSR      Values: signin, signup, forgot    */
     currentPage: '',
     // Menu
     isMenuOpen: false,
@@ -1116,6 +1116,7 @@ var Pages = ((client, id) => {
         pointer-events: ${isSelected ? 'auto' : 'none'};
         position: absolute;
         width: 100%;
+        margin-top: ${client.lib.Sizes.HEADER_HEIGHT};
       `
     },
 
@@ -1547,14 +1548,15 @@ var Forgot = ((client, id) => {
 
     state(props, store) {
       return {
-        currentStep: store.get('forgot.currentStep')
+        currentStep: store.get('forgot.currentStep'),
+        currentPage: store.get('currentPage')
       };
     },
 
     classes: false,
     styles: {
-      carrousel: currentStep => `
-        width: 300%;
+      carrousel: (currentStep, currentPage) => `
+        width: ${currentPage === 'forgot' ? 300 : 100}%;
         display: flex;
         transition: all .6s ease;
         transform: translateX(${currentStep * -33.33}%);
@@ -1566,11 +1568,15 @@ var Forgot = ((client, id) => {
       state,
       classes
     }) {
+      const {
+        currentStep,
+        currentPage
+      } = state;
       return client.h("form", {
         id: 'forgot',
         "class": classes('container')
       }, client.h(Alerts, null), client.h(ForgotHeadline, null), client.h("div", {
-        style: styles.carrousel(state.currentStep)
+        style: styles.carrousel(currentStep, currentPage)
       }, client.h("div", {
         id: 'forgot-step-0',
         "class": classes('step')
@@ -2224,14 +2230,15 @@ var SignUp = ((client, id) => {
 
     state(props, store) {
       return {
+        currentPage: store.get('currentPage'),
         currentStep: store.get('signup.currentStep')
       };
     },
 
     classes: false,
     styles: {
-      carrousel: currentStep => `
-        width: 300%;
+      carrousel: (currentStep, currentPage) => `
+        width: ${currentPage === 'signup' ? 300 : 100}%;
         display: flex;
         transform: translateX(${currentStep * -33.33}%);
         transition: all .6s ease;
@@ -2243,11 +2250,15 @@ var SignUp = ((client, id) => {
       state,
       classes
     }) {
+      const {
+        currentStep,
+        currentPage
+      } = state;
       return client.h("form", {
         id: 'sign-up',
         "class": classes('container')
       }, client.h(Alerts, null), client.h(SignUpHeadline, null), client.h("div", {
-        style: styles.carrousel(state.currentStep)
+        style: styles.carrousel(currentStep, currentPage)
       }, client.h("div", {
         id: 'sign-up-step-0',
         "class": classes('step')
@@ -2303,7 +2314,6 @@ var rootComponent = ((client, id) => {
   const {
     SignIn,
     SignUp,
-    Welcome,
     Forgot
   } = client.ui.pages;
   return client.hoc({
@@ -2342,7 +2352,7 @@ var rootComponent = ((client, id) => {
       } = state;
       return client.h("div", {
         id: 'root',
-        "class": classes('root', 'safe-area')
+        "class": classes('root')
       }, client.h(MenuIcon, {
         isOpen: isMenuOpen,
         onClick: onClickMenu,
@@ -2360,8 +2370,7 @@ var rootComponent = ((client, id) => {
         pages: {
           signin: SignIn,
           signup: SignUp,
-          forgot: Forgot,
-          welcome: Welcome
+          forgot: Forgot
         }
       }));
     }
